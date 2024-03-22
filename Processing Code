@@ -1,0 +1,1107 @@
+Dim FuelCO2EFCollection As New Collection
+Dim FuelCH4EFCollection As New Collection
+Dim FuelN2OEFCollection As New Collection
+Dim ProcessSheetPrefix, Path As String
+Dim GenSheetName, GenFuelSheetName As String
+Dim FiltFacilityNameCol As Integer
+Dim NameCol As Integer
+
+Sub DefineGlobalVars()
+    ProcessSheetPrefix = "emissions-hourly-2021-xx"
+    GenSheetName = "GEN"
+    GenFuelSheetName = "GENFUEL"
+    FiltFacilityNameCol = 35
+    NameCol = 9
+End Sub
+
+Function DaysInMonth(Month As Integer) As Integer
+
+   Select Case Month
+      Case 1, 3, 5, 7, 8, 10, 12
+         DaysInMonth = 31
+      Case 4, 6, 9, 11
+         DaysInMonth = 30
+      Case 2
+        DaysInMonth = 28
+   End Select
+   
+End Function
+
+Sub CreateFuelEFCollections()
+    Dim EF As Double
+    
+    'CO2
+    EF = 0.13026
+    FuelCO2EFCollection.Add EF, "AB"
+    EF = 0.11413
+    FuelCO2EFCollection.Add EF, "ANT"
+    EF = 0.30239
+    FuelCO2EFCollection.Add EF, "BFG"
+    EF = 0.10296
+    FuelCO2EFCollection.Add EF, "BIT"
+    EF = 0.11083
+    FuelCO2EFCollection.Add EF, "BLQ"
+    EF = 0.05164
+    FuelCO2EFCollection.Add EF, "COG"
+    EF = 0.08166
+    FuelCO2EFCollection.Add EF, "DFO"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "H"
+    EF = 0.07961
+    FuelCO2EFCollection.Add EF, "JF"
+    EF = 0.08289
+    FuelCO2EFCollection.Add EF, "KER"
+    EF = 0.0635
+    FuelCO2EFCollection.Add EF, "LFG"
+    EF = 0.10622
+    FuelCO2EFCollection.Add EF, "LIG"
+    EF = 0.09998
+    FuelCO2EFCollection.Add EF, "MSB"
+    EF = 0.09998
+    FuelCO2EFCollection.Add EF, "MSN"
+    EF = 0.09998
+    FuelCO2EFCollection.Add EF, "MSW"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "MWH"
+    EF = 0.05844
+    FuelCO2EFCollection.Add EF, "NG"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "NUC"
+    EF = 0.0635
+    FuelCO2EFCollection.Add EF, "OBG"
+    EF = 0.09257
+    FuelCO2EFCollection.Add EF, "OBL"
+    EF = 0.1163
+    FuelCO2EFCollection.Add EF, "OBS"
+    EF = 0.05844
+    FuelCO2EFCollection.Add EF, "OG"
+    EF = 0.11289
+    FuelCO2EFCollection.Add EF, "PC"
+    EF = 0.06775
+    FuelCO2EFCollection.Add EF, "PG"
+    EF = 0.05844
+    FuelCO2EFCollection.Add EF, "PRG"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "PUR"
+    EF = 0.10529
+    FuelCO2EFCollection.Add EF, "RC"
+    EF = 0.08159
+    FuelCO2EFCollection.Add EF, "RFO"
+    EF = 0.05844
+    FuelCO2EFCollection.Add EF, "SGP"
+    EF = 0.09257
+    FuelCO2EFCollection.Add EF, "SLW"
+    EF = 0.10695
+    FuelCO2EFCollection.Add EF, "SUB"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "SUN"
+    EF = 0.09477
+    FuelCO2EFCollection.Add EF, "TDF"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "WAT"
+    EF = 0.10529
+    FuelCO2EFCollection.Add EF, "WC"
+    EF = 0.09257
+    FuelCO2EFCollection.Add EF, "WDL"
+    EF = 0.1034
+    FuelCO2EFCollection.Add EF, "WDS"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "WH"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "WND"
+    EF = 0.08525
+    FuelCO2EFCollection.Add EF, "WO"
+    EF = 0#
+    FuelCO2EFCollection.Add EF, "UNK"
+    
+    'CH4
+    EF = 0.07055
+    FuelCH4EFCollection.Add EF, "AB"
+    EF = 0.02425
+    FuelCH4EFCollection.Add EF, "ANT"
+    EF = 5E-05
+    FuelCH4EFCollection.Add EF, "BFG"
+    EF = 0.02425
+    FuelCH4EFCollection.Add EF, "BIT"
+    EF = 0.00698
+    FuelCH4EFCollection.Add EF, "BLQ"
+    EF = 0.00106
+    FuelCH4EFCollection.Add EF, "COG"
+    EF = 0.00661
+    FuelCH4EFCollection.Add EF, "DFO"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "H"
+    EF = 0.00661
+    FuelCH4EFCollection.Add EF, "JF"
+    EF = 0.00661
+    FuelCH4EFCollection.Add EF, "KER"
+    EF = 0.00233
+    FuelCH4EFCollection.Add EF, "LFG"
+    EF = 0.02425
+    FuelCH4EFCollection.Add EF, "LIG"
+    EF = 0.07055
+    FuelCH4EFCollection.Add EF, "MSB"
+    EF = 0.07055
+    FuelCH4EFCollection.Add EF, "MSN"
+    EF = 0.07055
+    FuelCH4EFCollection.Add EF, "MSW"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "MWH"
+    EF = 0.0022
+    FuelCH4EFCollection.Add EF, "NG"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "NUC"
+    EF = 0.00233
+    FuelCH4EFCollection.Add EF, "OBG"
+    EF = 0.00698
+    FuelCH4EFCollection.Add EF, "OBL"
+    EF = 0.06978
+    FuelCH4EFCollection.Add EF, "OBS"
+    EF = 0.0022
+    FuelCH4EFCollection.Add EF, "OG"
+    EF = 0.00661
+    FuelCH4EFCollection.Add EF, "PC"
+    EF = 0.00661
+    FuelCH4EFCollection.Add EF, "PG"
+    EF = 0.0022
+    FuelCH4EFCollection.Add EF, "PRG"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "PUR"
+    EF = 0.02425
+    FuelCH4EFCollection.Add EF, "RC"
+    EF = 0.00661
+    FuelCH4EFCollection.Add EF, "RFO"
+    EF = 0.0022
+    FuelCH4EFCollection.Add EF, "SGP"
+    EF = 0.00698
+    FuelCH4EFCollection.Add EF, "SLW"
+    EF = 0.02425
+    FuelCH4EFCollection.Add EF, "SUB"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "SUN"
+    EF = 0.07055
+    FuelCH4EFCollection.Add EF, "TDF"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "WAT"
+    EF = 0.02425
+    FuelCH4EFCollection.Add EF, "WC"
+    EF = 0.00698
+    FuelCH4EFCollection.Add EF, "WDL"
+    EF = 0.07055
+    FuelCH4EFCollection.Add EF, "WDS"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "WH"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "WND"
+    EF = 0.06978
+    FuelCH4EFCollection.Add EF, "WO"
+    EF = 0#
+    FuelCH4EFCollection.Add EF, "UNK"
+    
+    'N2O
+    EF = 0.00926
+    FuelN2OEFCollection.Add EF, "AB"
+    EF = 0.00353
+    FuelN2OEFCollection.Add EF, "ANT"
+    EF = 0.00022
+    FuelN2OEFCollection.Add EF, "BFG"
+    EF = 0.00353
+    FuelN2OEFCollection.Add EF, "BIT"
+    EF = 0.00465
+    FuelN2OEFCollection.Add EF, "BLQ"
+    EF = 0.00022
+    FuelN2OEFCollection.Add EF, "COG"
+    EF = 0.00132
+    FuelN2OEFCollection.Add EF, "DFO"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "H"
+    EF = 0.00132
+    FuelN2OEFCollection.Add EF, "JF"
+    EF = 0.00132
+    FuelN2OEFCollection.Add EF, "KER"
+    EF = 0.00023
+    FuelN2OEFCollection.Add EF, "LFG"
+    EF = 0.00353
+    FuelN2OEFCollection.Add EF, "LIG"
+    EF = 0.00926
+    FuelN2OEFCollection.Add EF, "MSB"
+    EF = 0.00926
+    FuelN2OEFCollection.Add EF, "MSN"
+    EF = 0.00926
+    FuelN2OEFCollection.Add EF, "MSW"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "MWH"
+    EF = 0.00022
+    FuelN2OEFCollection.Add EF, "NG"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "NUC"
+    EF = 0.00023
+    FuelN2OEFCollection.Add EF, "OBG"
+    EF = 0.0014
+    FuelN2OEFCollection.Add EF, "OBL"
+    EF = 0.0093
+    FuelN2OEFCollection.Add EF, "OBS"
+    EF = 0.00022
+    FuelN2OEFCollection.Add EF, "OG"
+    EF = 0.00132
+    FuelN2OEFCollection.Add EF, "PC"
+    EF = 0.00132
+    FuelN2OEFCollection.Add EF, "PG"
+    EF = 0.00022
+    FuelN2OEFCollection.Add EF, "PRG"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "PUR"
+    EF = 0.00353
+    FuelN2OEFCollection.Add EF, "RC"
+    EF = 0.00132
+    FuelN2OEFCollection.Add EF, "RFO"
+    EF = 0.00022
+    FuelN2OEFCollection.Add EF, "SGP"
+    EF = 0.0014
+    FuelN2OEFCollection.Add EF, "SLW"
+    EF = 0.00353
+    FuelN2OEFCollection.Add EF, "SUB"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "SUN"
+    EF = 0.00926
+    FuelN2OEFCollection.Add EF, "TDF"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "WAT"
+    EF = 0.00353
+    FuelN2OEFCollection.Add EF, "WC"
+    EF = 0.0014
+    FuelN2OEFCollection.Add EF, "WDL"
+    EF = 0.00926
+    FuelN2OEFCollection.Add EF, "WDS"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "WH"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "WND"
+    EF = 0.0093
+    FuelN2OEFCollection.Add EF, "WO"
+    EF = 0#
+    FuelN2OEFCollection.Add EF, "UNK"
+    
+End Sub
+
+Sub GetSheets()
+
+  'Application.ScreenUpdating = False
+  Application.Calculation = xlManual
+
+  Path = "/Users/dariaarmiyaeva/Downloads/XX-EPA-CEMS-2021/"
+ FileName = Dir(Path & "*.csv")
+ Do While FileName <> ""
+ Workbooks.Open FileName:=Path & FileName, ReadOnly:=True
+ Columns("D:D").Select
+ Selection.NumberFormat = "@"
+ For Each Sheet In ActiveWorkbook.Sheets
+ Sheet.Copy After:=ThisWorkbook.Sheets(1)
+ Next Sheet
+ Workbooks(FileName).Close savechanges:=False
+ FileName = Dir()
+ Loop
+ 
+ 
+  Application.Calculation = xlAutomatic
+
+End Sub
+
+Sub Output()
+   Dim GASHourlyCO2array(2 To 8761) As Double
+   Dim GASHourlyNGarray(2 To 8761) As Double
+   Dim GASHourlyN2Oarray(2 To 8761) As Double
+   Dim COALHourlyCO2array(2 To 8761) As Double
+   Dim COALHourlyNGarray(2 To 8761) As Double
+   Dim COALHourlyN2Oarray(2 To 8761) As Double
+   Dim GASMonthlyCO2array(2 To 8761) As Double
+   Dim GASMonthlyNGarray(2 To 8761) As Double
+   Dim GASMonthlyN2Oarray(2 To 8761) As Double
+   Dim COALMonthlyCO2array(2 To 8761) As Double
+   Dim COALMonthlyNGarray(2 To 8761) As Double
+   Dim COALMonthlyN2Oarray(2 To 8761) As Double
+   
+   FirstProcessedCol = 4
+   
+   FirstDataCol = 4
+   ProcessedHourlyCO2Col = 9
+   ProcessedHourlyNGCol = 10
+   ProcessedMonthlyCO2Col = 12
+   ProcessedMonthlyNGCol = 13
+   ProcessedHourlyGASOutputCO2Col = 19
+   ProcessedHourlyGASOutputNGCol = 20
+   ProcessedMonthlyGASOutputCO2Col = 21
+   ProcessedMonthlyGASOutputNGCol = 22
+   ProcessedHourlyCOALOutputCO2Col = 25
+   ProcessedHourlyCOALOutputNGCol = 26
+   ProcessedMonthlyCOALOutputCO2Col = 27
+   ProcessedMonthlyCOALOutputNGCol = 28
+   
+   For Index = 2 To 8761
+       GASHourlyCO2array(Index) = 0
+       GASHourlyNGarray(Index) = 0
+       GASMonthlyCO2array(Index) = 0
+       GASMonthlyNGarray(Index) = 0
+       COALHourlyCO2array(Index) = 0
+       COALHourlyNGarray(Index) = 0
+       COALMonthlyCO2array(Index) = 0
+       COALMonthlyNGarray(Index) = 0
+   Next Index
+   
+   DataCol = FirstDataCol
+   Do While IsEmpty(ThisWorkbook.Sheets("Data").Cells(1, DataCol).Value) = False
+      If ThisWorkbook.Sheets("Data").Cells(1, DataCol).Value = "GAS" Then
+        'Write column letters to Processed Sheet
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol).Value = Split(Cells(1, DataCol).Address, "$")(1)
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol + 1).Value = Split(Cells(1, DataCol + 1).Address, "$")(1)
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol + 2).Value = Split(Cells(1, DataCol + 2).Address, "$")(1)
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol + 3).Value = Split(Cells(1, DataCol + 3).Address, "$")(1)
+        Worksheets("Processed").Calculate
+        For Index = 2 To 8761
+            GASHourlyCO2array(Index) = GASHourlyCO2array(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyCO2Col).Value
+            GASHourlyNGarray(Index) = GASHourlyNGarray(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyNGCol).Value
+            GASMonthlyCO2array(Index) = GASMonthlyCO2array(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyCO2Col).Value
+            GASMonthlyNGarray(Index) = GASMonthlyNGarray(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyNGCol).Value
+        Next Index
+      End If
+      If ThisWorkbook.Sheets("Data").Cells(1, DataCol).Value = "COAL" Then
+        'Write column letters to Processed Sheet
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol).Value = Split(Cells(1, DataCol).Address, "$")(1)
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol + 1).Value = Split(Cells(1, DataCol + 1).Address, "$")(1)
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol + 2).Value = Split(Cells(1, DataCol + 2).Address, "$")(1)
+        ThisWorkbook.Sheets("Processed").Cells(1, FirstProcessedCol + 3).Value = Split(Cells(1, DataCol + 3).Address, "$")(1)
+        Worksheets("Processed").Calculate
+        For Index = 2 To 8761
+            COALHourlyCO2array(Index) = COALHourlyCO2array(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyCO2Col).Value
+            COALHourlyNGarray(Index) = COALHourlyNGarray(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyNGCol).Value
+            COALMonthlyCO2array(Index) = COALMonthlyCO2array(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyCO2Col).Value
+            COALMonthlyNGarray(Index) = COALMonthlyNGarray(Index) + ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyNGCol).Value
+        Next Index
+      End If
+      DataCol = DataCol + 1
+   Loop
+   
+   'Write out totals
+   For Index = 2 To 8761
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyGASOutputCO2Col).Value = GASHourlyCO2array(Index)
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyGASOutputNGCol).Value = GASHourlyNGarray(Index)
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyGASOutputCO2Col).Value = GASMonthlyCO2array(Index)
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyGASOutputNGCol).Value = GASMonthlyNGarray(Index)
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyCOALOutputCO2Col).Value = COALHourlyCO2array(Index)
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedHourlyCOALOutputNGCol).Value = COALHourlyNGarray(Index)
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyCOALOutputCO2Col).Value = COALMonthlyCO2array(Index)
+       ThisWorkbook.Sheets("Processed").Cells(Index, ProcessedMonthlyCOALOutputNGCol).Value = COALMonthlyNGarray(Index)
+   Next Index
+   
+End Sub
+
+Sub AssembleAverages()
+
+   IndexRow = 2
+   IndexCol = 30
+   DataRow = 2
+   DataCol1 = 48
+   DataCol2 = 67
+   
+   OutputFirstRow = 10
+   
+   For Index = 2 To 25
+       ThisWorkbook.Sheets("Processed").Cells(IndexRow, IndexCol).Value = Index
+       Worksheets("Processed").Calculate
+       For Col = DataCol1 To DataCol2
+           ThisWorkbook.Sheets("Processed").Cells(OutputFirstRow + Index - 2, Col).Value = ThisWorkbook.Sheets("Processed").Cells(DataRow, Col).Value
+       Next Col
+   Next Index
+End Sub
+' code found at https://excelmacromastery.com/excel-vba-collections/#The_Shortcoming_of_Using_Keys_in_Collections
+Function Exists(FuelCO2EFCollection As Collection, FuelStringKey As String) As Boolean
+    On Error GoTo EH
+
+    IsObject (FuelCO2EFCollection.Item(FuelStringKey))
+    
+    Exists = True
+EH:
+End Function
+
+Sub Confirm()
+
+  Dim CheckFacilityNameRow, CheckFacilityNameCol As Integer
+  Dim CheckGLoadMonthCol, CheckCO2MonthCol As Integer
+  Dim ConfirmPlantCodeRow, ConfirmPlantCodeCol As Integer
+  Dim ConfirmEPAPlantNameRow, ConfirmEPAPlantNameCol As Integer
+  Dim ConfirmEIAPlantCodeRow, ConfirmEIAPlantCodeCol As Integer
+  Dim ConfirmGLoadMonthRow, ConfirmGLoadMonthCol As Integer
+  Dim ConfirmCO2MonthRow, ConfirmCO2MonthCol As Integer
+  Dim ConfirmCH4MonthRow, ConfirmCH4MonthCol As Integer
+  Dim ConfirmN2OMonthRow, ConfirmN2OMonthCol As Integer
+  Dim MonthCount As Integer
+  Dim DateCol As Integer
+  Dim ProcessSheetMonth As Integer
+  Dim DataSheetMonth As Integer
+  Dim UnitRow As Integer
+  Dim sumtotalElecMMBtu, sumtotalMMBtu, sumtotalco2, sumtotalCH4, sumtotalN2O, sumtotalbioCO2, sumtotalbioCH4, sumtotalbioN2O As Double
+  Dim TotalMMBtuRow, TotalMMBtuCol, ElecMMBtuRow, ElecMMBtuCol As Integer
+  Dim co2EF, ch4EF, n2oEF As Double
+  Dim FuelString As String
+  Dim NewEIAPlantCOde As String
+  Dim UTO, EHO As Double
+  Dim AnnualDataCol, AnnualDataRow As Integer
+  Dim FiltFacilityNameRow As Integer
+  Dim NumPlants As Integer
+ 
+  DateCol = 6
+ 
+  TotalMMBtuRow = 3
+  TotalMMBtuCol = 11
+  ElecMMBtuRow = 6
+  ElecMMBtuCol = 11
+ 
+  CheckFacilityNameCol = 9
+  CheckFacilityNameRow = 2
+ 
+  CheckGLoadMonthCol = 25
+ 
+  CheckCO2MonthCol = 50
+ 
+  ConfirmPlantCodeCol = 2
+  ConfirmPlantCodeRow = 1
+ 
+  ConfirmEIAPlantCodeCol = 2
+  ConfirmEIAPlantCodeRow = 10
+   
+  ConfirmEPAPlantNameCol = 8
+  ConfirmEPAPlantNameRow = 3
+ 
+  ConfirmGLoadMonthRow = 12
+  ConfirmGLoadMonthCol = 25
+ 
+  ConfirmCO2MonthRow = 32
+  ConfirmCO2MonthCol = 25
+ 
+  ConfirmCO2estMonthRow = 12
+  ConfirmCO2estMonthCol = 39
+ 
+  ConfirmCH4estMonthRow = 32
+  ConfirmCH4estMonthCol = 39
+  
+  ConfirmN2OestMonthRow = 52
+  ConfirmN2OestMonthCol = 39
+ 
+  ConfirmBioCO2estMonthRow = 12
+  ConfirmBioCO2estMonthCol = 53
+ 
+  ConfirmBioCH4estMonthRow = 32
+  ConfirmBioCH4estMonthCol = 53
+  
+  ConfirmBioN2OestMonthRow = 52
+  ConfirmBioN2OestMonthCol = 53
+ 
+  ConfirmRejectionRow = 26
+ 
+  ConfirmCO2adjMonthRow = 50
+  ConfirmCO2adjMonthCol = 11
+ 
+  ConfirmNGMonthRow = 25
+  ConfirmNGMonthCol = 11
+ 
+  ConfirmMissiNGMonthRow = 55
+  ConfirmMissiNGMonthCol = 11
+ 
+  ConfirmMissiNGCO2adjMonthRow = 69
+  ConfirmMissiNGCO2adjMonthCol = 11
+ 
+  ConfirmRejectNGMonthRow = 71
+  ConfirmRejectNGMonthCol = 11
+ 
+  ConfirmRejectNGCO2adjMonthRow = 73
+  ConfirmRejectNGCO2adjMonthCol = 11
+  
+ 
+  ConfirmGLoadRow = 28
+  ConfirmGLoadCol = 11
+ 
+  ConfirmNGRow = 25
+  ConfirmNGCol = 11
+ 
+  AnnualDataCol = 4
+  AnnualDataRow = 2
+ 
+  HourlyOutputCol = 30
+ 
+  Call DefineGlobalVars
+ 
+  Call CreateFuelEFCollections
+ 
+  Application.Calculation = xlManual
+ 
+  CheckFacilityNameRow = 2
+  Do While IsEmpty(ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol).Value) = False
+ 
+     'Find if data has already been written
+     AnnualDataPlantNumberCol = 5
+     Do While IsEmpty(ThisWorkbook.Sheets("Data").Cells(1, AnnualDataPlantNumberCol).Value) = False And ThisWorkbook.Sheets("Data").Cells(1, AnnualDataPlantNumberCol).Value <> ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value
+        AnnualDataPlantNumberCol = AnnualDataPlantNumberCol + 4
+     Loop
+     AnnualDataCol = AnnualDataPlantNumberCol - 1
+     
+     'Check if the data is already good
+     If ThisWorkbook.Sheets("Data").Cells(1, AnnualDataPlantNumberCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value Then
+        co2sum = 0
+        gloadsum = 0
+        For MonthCount = 1 To 12
+            co2sum = co2sum + ThisWorkbook.Sheets("Data").Cells(MonthCount + 14, AnnualDataCol + 2).Value
+            gloadsum = gloadsum + ThisWorkbook.Sheets("Data").Cells(MonthCount + 14, AnnualDataCol + 3).Value
+        Next MonthCount
+     End If
+     
+     'Check anyway
+     co2sum = 1
+     
+     If IsEmpty(ThisWorkbook.Sheets("Data").Cells(1, AnnualDataPlantNumberCol).Value) = False And co2sum + gloadsum = 0 Then
+        Do While ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow + 1, CheckFacilityNameCol + 1).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value
+           CheckFacilityNameRow = CheckFacilityNameRow + 1
+        Loop
+        CheckFacilityNameRow = CheckFacilityNameRow + 1
+     Else
+       
+        'Reset generation indicators
+        For ResetRow = 12 To 23
+            Worksheets("DataConfirm").Cells(ResetRow, 10).Value = 1
+            Worksheets("DataConfirm").Cells(ResetRow, ConfirmGLoadMonthCol - 1).Value = 1
+        Next ResetRow
+        'Reset rejection indicators
+        ConfirmRejectionCol = 11
+        For ResetCol = ConfirmRejectionCol To ConfirmRejectionCol + 11
+            Worksheets("DataConfirm").Cells(ConfirmRejectionRow, ResetCol) = 0
+        Next ResetCol
+        'Reset uniform annual scaling indicator
+        Worksheets("DataConfirm").Cells(28, 8) = 0
+        'Reset NG inclusion indicators
+        Worksheets("DataConfirm").Cells(63, 8) = 1
+        Worksheets("DataConfirm").Cells(67, 8) = 1
+        'Reset missing NG constant indicator
+        Worksheets("DataConfirm").Cells(72, 8) = 1
+        'Copy plant Name
+        ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmEPAPlantNameRow, ConfirmEPAPlantNameCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol).Value
+        'Copy plant code
+        ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value
+        ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmEIAPlantCodeRow, ConfirmEIAPlantCodeCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value
+        Worksheets("DataConfirm").Calculate
+     
+        'Store PlantRow
+        PlantRow = CheckFacilityNameRow
+     
+        'Copy plant unit ids
+        Do While ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value
+           ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmEPAPlantNameRow + 1 + CheckFacilityNameRow - PlantRow, ConfirmEPAPlantNameCol + 1).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 2).Value
+           CheckFacilityNameRow = CheckFacilityNameRow + 1
+        Loop
+        'Delete old ones
+        Do While IsEmpty(ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmEPAPlantNameRow + 1 + CheckFacilityNameRow - PlantRow, ConfirmEPAPlantNameCol + 1).Value) = False
+           ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmEPAPlantNameRow + 1 + CheckFacilityNameRow - PlantRow, ConfirmEPAPlantNameCol + 1).Clear
+           CheckFacilityNameRow = CheckFacilityNameRow + 1
+        Loop
+        CheckFacilityNameRow = PlantRow
+        
+        'Here, the user will be prompted to enter a plant ID. To use most effectively, place a breakpoint at the recommended break point line and run, where you will enter and ID then break and go to your DataConfirm sheet.
+        'In DataConfirm, you can manipulate the months, units, etc. included in the data and compare EIA and AMPD data.
+        'Note that when the function loops, you can only continue with plants with a higher number than the plant you ended on. If you would like to add the same plant, or a prior plant, reset the Sub and write the plant number you wish to work on.
+        Worksheets("DataConfirm").Calculate
+        If MsgBox("Do Plant Names Match?", vbYesNo) = vbNo Then
+           NewEIAPlantCOde = InputBox("Provide EIA Plant Code. This code will be written in the DataConfirm sheet.")
+           Worksheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value = CLng(NewEIAPlantCOde)
+           Worksheets("DataConfirm").Cells(ConfirmEIAPlantCodeRow, ConfirmEIAPlantCodeCol).Value = CLng(NewEIAPlantCOde)
+        End If
+        Worksheets("DataConfirm").Calculate
+     
+       Do While ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value <> ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value
+       CheckFacilityNameRow = CheckFacilityNameRow + 1
+       Loop
+       PlantRow = CheckFacilityNameRow
+       
+        'Clear GLoad rows and copy new ones, added from above
+        ConfirmGLoadMonthRow = 12
+        For ClearRow = ConfirmGLoadMonthRow To ConfirmGLoadMonthRow + 31
+            For MonthCount = 1 To 12
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmGLoadMonthCol + MonthCount - 1).Value = 0
+            Next MonthCount
+        Next ClearRow
+        Do While ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value
+           'Copy GLoad values
+           For MonthCount = 1 To 12
+               Worksheets("DataConfirm").Cells(ConfirmGLoadMonthRow, ConfirmGLoadMonthCol + MonthCount - 1).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckGLoadMonthCol + 2 * MonthCount - 2).Value
+           Next MonthCount
+           ConfirmGLoadMonthRow = ConfirmGLoadMonthRow + 1
+           CheckFacilityNameRow = CheckFacilityNameRow + 1
+        Loop
+     
+        'Clear CO2 rows and copy new ones
+        ConfirmCO2MonthRow = 52
+        For ClearRow = ConfirmCO2MonthRow To ConfirmCO2MonthRow + 31
+            For MonthCount = 1 To 12
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmCO2MonthCol + MonthCount - 1).Value = 0
+            Next MonthCount
+        Next ClearRow
+        CheckFacilityNameRow = PlantRow
+        Do While ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckFacilityNameCol + 1).Value = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value
+           'Copy CO2 values
+           For MonthCount = 1 To 12
+               Worksheets("DataConfirm").Cells(ConfirmCO2MonthRow, ConfirmCO2MonthCol + MonthCount - 1).Value = ThisWorkbook.Sheets("DataCheck").Cells(CheckFacilityNameRow, CheckCO2MonthCol + MonthCount - 1).Value
+           Next MonthCount
+           ConfirmCO2MonthRow = ConfirmCO2MonthRow + 1
+           CheckFacilityNameRow = CheckFacilityNameRow + 1
+        Loop
+     
+        'Clear CO2 and CH4 estimate rows, Added N2O
+        ConfirmCO2estMonthRow = 12
+        For ClearRow = ConfirmCO2estMonthRow To ConfirmCO2estMonthRow + 11
+            For MonthCount = 1 To 12
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmCO2estMonthCol + MonthCount - 1).Value = 0
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmBioCO2estMonthCol + MonthCount - 1).Value = 0
+            Next MonthCount
+        Next ClearRow
+        ConfirmCH4estMonthRow = 32
+        For ClearRow = ConfirmCH4estMonthRow To ConfirmCH4estMonthRow + 11
+            For MonthCount = 1 To 12
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmCH4estMonthCol + MonthCount - 1).Value = 0
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmBioCH4estMonthCol + MonthCount - 1).Value = 0
+            Next MonthCount
+        Next ClearRow
+        ConfirmN2OestMonthRow = 52
+        For ClearRow = ConfirmN2OestMonthRow To ConfirmN2OestMonthRow + 11
+            For MonthCount = 1 To 12
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmN2OestMonthCol + MonthCount - 1).Value = 0
+                Worksheets("DataConfirm").Cells(ClearRow, ConfirmBioN2OestMonthCol + MonthCount - 1).Value = 0
+            Next MonthCount
+        Next ClearRow
+     
+        'Write CO2 and CH4 estimates, and N2O
+        UnitRow = 12
+        ConfirmCO2estMonthRow = 12
+        ConfirmCH4estMonthRow = 32
+        ConfirmN2OestMonthRow = 52
+        ConfirmBioCO2estMonthRow = 12
+        ConfirmBioCH4estMonthRow = 32
+        ConfirmBioN2OestMonthRow = 52
+        sumtotalElecMMBtu = 0
+        sumtotalMMBtu = 0
+        UnitRow = 12
+        If IsNumeric(ThisWorkbook.Sheets("DataConfirm").Cells(UnitRow, 2).Value) Then
+           Do While ThisWorkbook.Sheets("DataConfirm").Cells(UnitRow, 2).Value > 0
+              ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol - 1) = ThisWorkbook.Sheets("DataConfirm").Cells(UnitRow, 2).Value
+              ThisWorkbook.Sheets("DataConfirm").Cells(ElecMMBtuRow, ElecMMBtuCol - 1) = ThisWorkbook.Sheets("DataConfirm").Cells(UnitRow, 2).Value
+              Worksheets("DataConfirm").Calculate
+              For MonthCount = 1 To 12
+                  If IsNumeric(ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol + MonthCount - 1).Value) Then
+                     FuelString = ThisWorkbook.Sheets("DataConfirm").Cells(UnitRow, 5).Value
+                    
+                        If Not Exists(FuelCO2EFCollection, FuelString) Then
+                        FuelString = "UNK"
+                     End If
+                     
+                     co2EF = FuelCO2EFCollection(FuelString)
+                     ch4EF = FuelCH4EFCollection(FuelString)
+                     n2oEF = FuelN2OEFCollection(FuelString)
+                     co2est = co2EF * ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol + MonthCount - 1).Value
+                     ch4est = ch4EF * ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol + MonthCount - 1).Value
+                     n2oest = n2oEF * ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol + MonthCount - 1).Value
+                     If FuelString = "OBG" Or FuelString = "WDS" Or FuelString = "LFG" Or FuelString = "OBS" Or FuelString = "MSB" Then
+                        bioco2est = co2EF * ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol + MonthCount - 1).Value
+                        bioch4est = ch4EF * ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol + MonthCount - 1).Value
+                        bion2oest = n2oEF * ThisWorkbook.Sheets("DataConfirm").Cells(TotalMMBtuRow, TotalMMBtuCol + MonthCount - 1).Value
+                     Else
+                        bioco2est = 0
+                        bioch4est = 0
+                        bion2oest = 0
+                     End If
+                     Worksheets("DataConfirm").Cells(ConfirmCO2estMonthRow, ConfirmCO2estMonthCol + MonthCount - 1).Value = co2est
+                     Worksheets("DataConfirm").Cells(ConfirmCH4estMonthRow, ConfirmCH4estMonthCol + MonthCount - 1).Value = ch4est
+                     Worksheets("DataConfirm").Cells(ConfirmN2OestMonthRow, ConfirmN2OestMonthCol + MonthCount - 1).Value = n2oest
+                     Worksheets("DataConfirm").Cells(ConfirmBioCO2estMonthRow, ConfirmBioCO2estMonthCol + MonthCount - 1).Value = bioco2est
+                    Worksheets("DataConfirm").Cells(ConfirmBioCH4estMonthRow, ConfirmBioCH4estMonthCol + MonthCount - 1).Value = bioch4est
+                    Worksheets("DataConfirm").Cells(ConfirmBioN2OestMonthRow, ConfirmBioN2OestMonthCol + MonthCount - 1).Value = bion2oest
+                    
+                  End If
+               Next MonthCount
+               UnitRow = UnitRow + 1
+               ConfirmCO2estMonthRow = ConfirmCO2estMonthRow + 1
+               ConfirmCH4estMonthRow = ConfirmCH4estMonthRow + 1
+               ConfirmN2OestMonthRow = ConfirmN2OestMonthRow + 1
+               ConfirmBioCO2estMonthRow = ConfirmBioCO2estMonthRow + 1
+               ConfirmBioCH4estMonthRow = ConfirmBioCH4estMonthRow + 1
+               ConfirmBioN2OestMonthRow = ConfirmBioN2OestMonthRow + 1
+            Loop
+
+        End If
+        Worksheets("DataConfirm").Calculate
+        UnitRow = UnitRow 'Break point recommended here
+   
+        'If you would like to add a plant to the Data sheet, click yes and add the units you wish to add.
+        Do While MsgBox("Add Plant " & ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value & " to Data?", vbYesNo) = vbYes
+           AnnualDataRow = 2
+           Worksheets("DataConfirm").Calculate
+           'Find the first column without data
+           Do While IsEmpty(ThisWorkbook.Sheets("Data").Cells(AnnualDataRow, AnnualDataCol).Value) = False
+              AnnualDataCol = AnnualDataCol + 1
+           Loop
+           'Write the plant BA to the column header
+           ThisWorkbook.Sheets("Data").Cells(1, AnnualDataCol + 2) = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow + 5, ConfirmPlantCodeCol).Value
+           'Write the plant number to the column header
+           ThisWorkbook.Sheets("Data").Cells(1, AnnualDataCol + 1) = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow, ConfirmPlantCodeCol).Value
+           'Write the plant type to the column header
+           ThisWorkbook.Sheets("Data").Cells(1, AnnualDataCol) = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmPlantCodeRow + 4, ConfirmPlantCodeCol).Value
+           Worksheets("DataConfirm").Calculate
+           'Write profiles to Data sheet
+           ProcessSheetName = ProcessSheetPrefix
+           FacilityNameRow = 2
+           
+           Do While ThisWorkbook.Sheets("DataConfirm").Cells(1, 2).Value <> ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 3).Value 'B1 is plant number, 3 is the Facility ID
+                FacilityNameRow = FacilityNameRow + 1
+           Loop
+           Do While ThisWorkbook.Sheets("DataConfirm").Cells(1, 2).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 3).Value 'While plant ID matches ...
+           CurrentUnit = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 4).Value
+           AnnualDataRow = 2
+           Do While MsgBox("Add unit " & CurrentUnit & " to total?", vbYesNo) = vbYes
+           Do While ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 4).Value = CurrentUnit And ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 3).Value = NewEIAPlantCOde
+           
+                CurrentMonth = Month(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value)
+                MonthCount = CurrentMonth
+                ProcessSheetMonth = Month(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 6).Value)
+                
+                Do While Month(ThisWorkbook.Sheets("Data").Cells(AnnualDataRow, 1).Value) <> ProcessSheetMonth
+                    AnnualDataRow = AnnualDataRow + 1
+                Loop
+                
+               Do While Month(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value) = MonthCount And IsEmpty(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value) = False
+                    GLoadWrite = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 9).Value * ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 8).Value
+                    CO2Write = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 15).Value
+                    ThisWorkbook.Sheets("Data").Cells(AnnualDataRow, AnnualDataCol + 1).Value = GLoadWrite + ThisWorkbook.Sheets("Data").Cells(AnnualDataRow, AnnualDataCol + 1).Value
+                    ThisWorkbook.Sheets("Data").Cells(AnnualDataRow, AnnualDataCol).Value = CO2Write + ThisWorkbook.Sheets("Data").Cells(AnnualDataRow, AnnualDataCol).Value 'check + 1 here
+                    AnnualDataRow = AnnualDataRow + 1
+                    FacilityNameRow = FacilityNameRow + 1
+               Loop
+           Loop
+     'Loop 'End do while unit msgbox
+     Exit Do
+     Loop
+     Do While ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, 4).Value = CurrentUnit 'added
+        FacilityNameRow = FacilityNameRow + 1
+    Loop
+     
+          For MonthCount = 1 To 12
+               If ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmRejectionRow, ConfirmRejectionCol + MonthCount - 1) = 0 Then
+                  ThisWorkbook.Sheets("Data").Cells(MonthCount + 1, AnnualDataCol + 2).Value = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmCO2adjMonthRow, ConfirmCO2adjMonthCol + MonthCount - 1)
+                  ThisWorkbook.Sheets("Data").Cells(MonthCount + 1, AnnualDataCol + 3).Value = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmNGMonthRow, ConfirmNGMonthCol + MonthCount - 1)
+                  'Check for annual scaling
+                  If ThisWorkbook.Sheets("DataConfirm").Cells(28, 8).Value = 1 Then
+                     AnnualScale = ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmNGRow, ConfirmNGCol - 1) / ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmGLoadRow, ConfirmGLoadCol - 1)
+                     ThisWorkbook.Sheets("Data").Cells(MonthCount + 1, AnnualDataCol + 3).Value = AnnualScale * ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmGLoadRow, ConfirmGLoadCol + MonthCount - 1) 'Changed to +4 from +3
+                  End If
+               Else
+                  ThisWorkbook.Sheets("Data").Cells(MonthCount + 1, AnnualDataCol + 2).Value = 0
+                  ThisWorkbook.Sheets("Data").Cells(MonthCount + 1, AnnualDataCol + 3).Value = 0
+               End If
+               NGconstant = ThisWorkbook.Sheets("DataConfirm").Cells(72, 8).Value
+               'Write constant values
+               ThisWorkbook.Sheets("Data").Cells(MonthCount + 14, AnnualDataCol + 2).Value = NGconstant * ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmMissiNGCO2adjMonthRow, ConfirmMissiNGCO2adjMonthCol + MonthCount - 1) + ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmRejectNGCO2adjMonthRow, ConfirmRejectNGCO2adjMonthCol + MonthCount - 1)
+               ThisWorkbook.Sheets("Data").Cells(MonthCount + 14, AnnualDataCol + 3).Value = NGconstant * ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmMissiNGMonthRow, ConfirmMissiNGMonthCol + MonthCount - 1) + ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmRejectNGMonthRow, ConfirmRejectNGMonthCol + MonthCount - 1)
+               'Write scalable values
+               ThisWorkbook.Sheets("Data").Cells(MonthCount + 27, AnnualDataCol + 2).Value = (1 - NGconstant) * ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmMissiNGCO2adjMonthRow, ConfirmMissiNGCO2adjMonthCol + MonthCount - 1)
+               ThisWorkbook.Sheets("Data").Cells(MonthCount + 27, AnnualDataCol + 3).Value = (1 - NGconstant) * ThisWorkbook.Sheets("DataConfirm").Cells(ConfirmMissiNGMonthRow, ConfirmMissiNGMonthCol + MonthCount - 1)
+           Next MonthCount
+           'Write the emission rate
+           ThisWorkbook.Sheets("Data").Cells(1, AnnualDataCol + 3) = ThisWorkbook.Sheets("DataConfirm").Cells(40, 8).Value
+           Worksheets("DataConfirm").Calculate
+       
+        Loop
+        AnnualDataCol = AnnualDataCol + 4
+    Loop
+    End If
+  Loop
+ 
+
+  Application.Calculation = xlAutomatic
+
+End Sub
+
+Sub Process()
+
+  Dim FacilityNameRow, FacilityNameCol As Integer
+  Dim FiltFacilityNameRow, FiltFacilityNameCol As Integer
+  Dim ORISPLCodeCol, MonthCount, NumMonths, FoundIt As Integer
+  Dim ProcessSheetName, MonthNumber, FirstSheetName As String
+  Dim HourCol, OPTimeCol, GLoadCol, CO2Col, DateCol As Integer
+  Dim GLoad, CO2, NetGen As Double
+  Dim GenRow, GenFuelRow As Integer
+  Dim GenPlantCol, GenFuelPlantCol As Integer
+  Dim GenNetCol, GenFuelNetCol, FirstSheetGenCol As Integer
+  Dim GLoadHourly(1 To 744) As Double
+  Dim CO2Hourly(1 To 744) As Double
+  Dim HourlyOutputCol, HourlyOutputRow, HourlyIndex As Integer
+  Dim FuelString As String
+  Dim sumtotal, sumtotalco2, sumtotalgload As Double
+  Dim MyDate As Date
+   
+  'The number corresponding to the variables refer to the row or column in the sheet that they will be written in. The current numbers are based on the 2021 hourly emissions formatting, where the annual data for a state is in a single sheet.
+  FacilityNameCol = 2
+  DateCol = 6
+  HourCol = 7
+  OPTimeCol = 8
+  GLoadCol = 9
+  CO2Col = 15
+  
+  'The 'FiltFacilityNameCol' variable refers to a filtered list written out using this macro in the same sheet as the EPA provided hourly data. A blank column in used in sheet for the data to be written in.
+  FiltFacilityNameCol = 35
+  ORISPLCodeCol = 3
+  NumMonths = 12
+
+  GenPlantCol = 1
+  GenFuelPlantCol = 1
+  GenNetCol = 26
+  GenFuelNetCol = 96
+ 
+ 'Calling other subs so their variables can be referred to in this sub.
+  Call CreateFuelEFCollections
+ 
+  Call DefineGlobalVars
+ 
+  Application.Calculation = xlManual
+ 
+  ProcessSheetName = ProcessSheetPrefix
+ 
+  FiltFacilityNameRow = 2
+  FacilityNameRow = 2
+  GLoad = 0#
+  CO2 = 0#
+  For HourlyIndex = 1 To 744
+      GLoadHourly(HourlyIndex) = 0#
+      CO2Hourly(HourlyIndex) = 0#
+  Next HourlyIndex
+  
+  'While there is data for a facility...
+  Do While IsEmpty(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, FacilityNameCol).Value) = False
+     HourlyOutputCol = 30
+     'Add Facility Name if not in filtered list
+     If IsEmpty(ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value) = True Then
+        ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, FacilityNameCol).Value
+        ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 1).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol).Value
+        ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 2).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value
+     End If
+     UnitIDStrings = ""
+     OldUnitIDString = ""
+     NewUnitIDString = ""
+     If IsNumeric(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value) Then
+        OldUnitIDString = CStr(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value)
+     Else
+        OldUnitIDString = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value
+     End If
+     UnitIDStrings = OldUnitIDString & " "
+     NumUnits = 1
+       
+       GLoad = 0#
+       CO2 = 0#
+       MonthCount = Month(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value)
+    
+     'While the facility names match up with one another...
+     Do While ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, FacilityNameCol).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value
+        
+        If IsNumeric(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value) Then
+           NewUnitIDString = CStr(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value)
+        Else
+           NewUnitIDString = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value
+        End If
+        
+        'If the UnitID changes... need to make sure that data was already written
+        If NewUnitIDString <> OldUnitIDString Then
+           FiltFacilityNameRow = FiltFacilityNameRow + 1
+           UnitIDStrings = UnitIDStrings & NewUnitIDString & " "
+           OldUnitIDString = NewUnitIDString
+           NumUnits = NumUnits + 1
+           ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, FacilityNameCol).Value
+           ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 1).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol).Value
+           ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 2).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, ORISPLCodeCol + 1).Value
+           'Reset for next unit.
+            'GLoad = 0#
+            'CO2 = 0#
+        Else
+            CurrentMonth = Month(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value)
+            MonthCount = CurrentMonth
+            'If the current month, as found by the data, is not the same as the mount found on the count, write out the GLoad and CO2 sums. This area was added to ensure that the GLoad and CO2 are added for every month, specificalyly for the last month of the last unit in a plant.
+           Do While Month(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value) = MonthCount And IsEmpty(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value) = False
+                'Add GLoad and CO2 values from the hourly data. The GLoad is calculated by multiplying gross load by operating hour.
+                GLoad = GLoad + ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, OPTimeCol).Value * ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, GLoadCol).Value
+                CO2 = CO2 + ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, CO2Col).Value
+                FacilityNameRow = FacilityNameRow + 1
+            Loop
+        
+           ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 3 + 2 * (MonthCount - 1)).Value = GLoad
+           ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 4 + 2 * (MonthCount - 1)).Value = CO2
+           GLoad = 0#
+           CO2 = 0#
+        End If
+     Loop
+        
+        'The +1 makes sure that we cycle to the next row.
+        FacilityNameRow = FacilityNameRow
+     
+     FiltFacilityNameRow = FiltFacilityNameRow + 1
+     
+  Loop
+ 
+  'Go through all months to find all units that are associated with each plant in the first month sheet
+  DataCheckNameRow = 2
+  FiltFacilityNameRow = 2
+  FacilityNameRow = 2
+  NumPlants = 0
+  NameCol = 9
+  MonthCount = Month(ThisWorkbook.Sheets(ProcessSheetName).Cells(FacilityNameRow, DateCol).Value)
+  ProcessSheetName = ProcessSheetPrefix
+  Do While IsEmpty(ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value) = False
+     DataCheckNameFirstRow = DataCheckNameRow
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 1).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 1).Value
+     ThisWorkbook.Sheets("DataCheck").Cells(1, 2).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 1).Value
+     Worksheets("DataCheck").Calculate
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 2).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 2).Value
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 3).Value = ThisWorkbook.Sheets("DataCheck").Cells(3, 2).Value
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 4).Value = ThisWorkbook.Sheets("DataCheck").Cells(4, 2).Value
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 5).Value = ThisWorkbook.Sheets("DataCheck").Cells(5, 2).Value
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 6).Value = ThisWorkbook.Sheets("DataCheck").Cells(6, 2).Value
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 7).Value = ThisWorkbook.Sheets("DataCheck").Cells(7, 2).Value
+     GenFuelRow = 8
+     sumtotal = 0
+     ThisWorkbook.Sheets("DataCheck").Cells(7, 5).Value = ThisWorkbook.Sheets("DataCheck").Cells(7, 6).Value
+     Worksheets("DataCheck").Calculate
+     PMString = ""
+     FTString = ""
+     AERString = ""
+     If IsNumeric(ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 2).Value) Then
+     Do While ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 2).Value > 0
+        sumtotal = sumtotal + ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 3).Value
+        PMString = PMString & ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 4).Value & " "
+        FTString = FTString & ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 5).Value & " "
+        AERString = AERString & ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 6).Value & " "
+        GenFuelRow = GenFuelRow + 1
+     Loop
+     End If
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 8).Value = PMString
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 9).Value = FTString
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 10).Value = AERString
+     ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 11).Value = sumtotal
+     Do While ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow + 1, FiltFacilityNameCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol).Value
+        FiltFacilityNameRow = FiltFacilityNameRow + 1
+        DataCheckNameRow = DataCheckNameRow + 1
+        ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value
+        ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 1).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 1).Value
+        ThisWorkbook.Sheets("DataCheck").Cells(DataCheckNameRow, NameCol + 2).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 2).Value
+     Loop
+     NumUnits = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 5).Value
+
+     NumPlants = NumPlants + 1
+     FiltFacilityNameRow = FiltFacilityNameRow + 1
+     DataCheckNameRow = DataCheckNameRow + 1
+  Loop
+  
+ 
+  'Write monthly GLoad and NetGen to DataCheck Sheet
+      ProcessSheetName = ProcessSheetPrefix
+      FiltFacilityNameRow = 2
+      PlantRow = 2
+      Do While IsEmpty(ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value) = False
+         'Find the row for the plant on DataCheck Sheet
+         Do While ThisWorkbook.Sheets("DataCheck").Cells(PlantRow, NameCol + 1).Value <> ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 1).Value
+            PlantRow = PlantRow + 1
+         Loop
+         
+         'Write NetGen for all generation
+ For MonthCount = 1 To 12
+         FiltFacilityNameRow = PlantRow
+         FindUnitRow = PlantRow
+         GenFuelRow = 8
+         ThisWorkbook.Sheets("DataCheck").Cells(1, 2).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 1).Value
+         ThisWorkbook.Sheets("DataCheck").Cells(7, 5).Value = ThisWorkbook.Sheets("DataCheck").Cells(28 + MonthCount, 2).Value
+         Worksheets("DataCheck").Calculate
+         sumtotal = 0
+         If IsNumeric(ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 2).Value) Then
+         Do While ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 2).Value > 0
+            If IsNumeric(ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 3).Value) Then
+            sumtotal = sumtotal + ThisWorkbook.Sheets("DataCheck").Cells(GenFuelRow, 3).Value
+            End If
+            GenFuelRow = GenFuelRow + 1
+         Loop
+         End If
+         ThisWorkbook.Sheets("DataCheck").Cells(PlantRow, NameCol + 14 + 2 * MonthCount + 1).Value = sumtotal
+         
+         'Write GLoad and CO2 for each unit
+         Do While ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(PlantRow, NameCol).Value
+            'Find the row for the current unit
+            FindUnitRow = PlantRow
+            Do While ThisWorkbook.Sheets("DataCheck").Cells(FindUnitRow, NameCol + 2).Value <> ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 2).Value
+               FindUnitRow = FindUnitRow + 1
+            Loop
+           
+            ThisWorkbook.Sheets("DataCheck").Cells(FindUnitRow, NameCol + 14 + 2 * MonthCount).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 3 + 2 * (MonthCount - 1)).Value
+            ThisWorkbook.Sheets("DataCheck").Cells(FindUnitRow, NameCol + 14 + 26 + MonthCount).Value = ThisWorkbook.Sheets(ProcessSheetName).Cells(FiltFacilityNameRow, FiltFacilityNameCol + 4 + 2 * (MonthCount - 1)).Value
+            FiltFacilityNameRow = FiltFacilityNameRow + 1
+         Loop
+         Next MonthCount
+      Loop
+ 
+  'Calculate total NetGen and GLoad
+  FiltFacilityNameRow = 2
+  Do While IsEmpty(ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol).Value) = False
+     sumtotal = 0
+     For MonthCount = 1 To NumMonths
+         sumtotal = sumtotal + ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 14 + 2 * MonthCount).Value
+     Next MonthCount
+     ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 12).Value = sumtotal
+     sumtotal = 0
+     For MonthCount = 1 To NumMonths
+         sumtotal = sumtotal + ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 14 + 2 * MonthCount + 1).Value
+     Next MonthCount
+     ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 13).Value = sumtotal
+     Do While ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow + 1, NameCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol).Value
+        FiltFacilityNameRow = FiltFacilityNameRow + 1
+        sumtotal = 0
+        For MonthCount = 1 To NumMonths
+            sumtotal = sumtotal + ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 14 + 2 * MonthCount).Value
+        Next MonthCount
+        ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 12).Value = sumtotal
+     Loop
+     FiltFacilityNameRow = FiltFacilityNameRow + 1
+  Loop
+ 
+  'Calculate total CO2 and gross ER
+  FiltFacilityNameRow = 2
+  Do While IsEmpty(ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol).Value) = False
+     ERrow = FiltFacilityNameRow
+     sumtotalco2 = 0
+     sumtotalgload = 0
+     sumtotal = 0
+     For MonthCount = 1 To NumMonths
+         sumtotal = sumtotal + ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 14 + 26 + MonthCount).Value
+     Next MonthCount
+     ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 14).Value = sumtotal
+     sumtotalco2 = sumtotalco2 + sumtotal
+     sumtotalgload = sumtotalgload + ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 12).Value
+     Do While ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow + 1, NameCol).Value = ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol).Value
+        FiltFacilityNameRow = FiltFacilityNameRow + 1
+        sumtotal = 0
+        For MonthCount = 1 To NumMonths
+            sumtotal = sumtotal + ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 14 + 26 + MonthCount).Value
+        Next MonthCount
+        ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 14).Value = sumtotal
+        sumtotalco2 = sumtotalco2 + sumtotal
+        sumtotalgload = sumtotalgload + ThisWorkbook.Sheets("DataCheck").Cells(FiltFacilityNameRow, NameCol + 12).Value
+     Loop
+     If sumtotalgload > 0 Then
+        ThisWorkbook.Sheets("DataCheck").Cells(ERrow, NameCol + 15).Value = 2000 * sumtotalco2 / sumtotalgload
+     Else
+        ThisWorkbook.Sheets("DataCheck").Cells(ERrow, NameCol + 15).Value = 0
+     End If
+     FiltFacilityNameRow = FiltFacilityNameRow + 1
+  Loop
+ 
+  Application.Calculation = xlAutomatic
+ 
+End Sub
